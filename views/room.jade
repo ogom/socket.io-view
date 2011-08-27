@@ -1,0 +1,26 @@
+head
+  script(type='text/javascript', src='/javascripts/room.js')
+
+div
+  h1= title
+  p Welcome to #{title}
+
+  p socket id: 
+    span#socketId
+  p connect all count: 
+    span#connectAllCount
+  p connect room count: 
+    span#connectRoomCount
+    
+div
+  hr
+  input#nameInput(type='text')
+  button#joinButton join
+  button#leaveButton leave
+
+  p
+  input#textInput(type='text')
+  button#messageButton message
+  
+  hr
+  #messageList
