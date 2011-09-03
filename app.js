@@ -10,9 +10,6 @@ var app = module.exports = express.createServer();
 // Configuration
 
 app.configure(function(){
-  app.use(express.cookieParser());
-  app.use(express.session({secret:'secret', key:'express.sid'}));
-  
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
@@ -20,6 +17,9 @@ app.configure(function(){
   app.use(require('stylus').middleware({ src: __dirname + '/public' }));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
+  
+  //app.use(express.cookieParser());
+  //app.use(express.session({secret:'secret', key:'express.sid'}));
 });
 
 app.configure('development', function(){
@@ -36,7 +36,7 @@ app.get('/', function(req, res){
   res.render('view', {
     title: 'socket.io view'
   });
-  req.session.hoge = 'hogehoge';
+  // req.session.hoge = 'hogehoge';
 });
 
 app.get('/room', function(req, res){
@@ -75,7 +75,6 @@ var roomSocket = io.of('/room').on('connection', function(socket) {
   roomSocket.json.emit('connectRoomCount', {count: roomSocket.clients().length});
   storeReload();
 
-
   socket.on('roomJoin', function(name) {                                                        
     console.log('room join', socket.id);                                                           
     socket.set('roomName', name);                                                               
@@ -108,8 +107,8 @@ var roomSocket = io.of('/room').on('connection', function(socket) {
   });
 
   socket.on('disconnect', function() {
-    console.log('view socket disconnected', socket.id);
-    viewSocket.json.emit('connectAllCount', {count: io.sockets.clients().length});
+    console.log('room socket disconnected', socket.id);
+    viewSocket.json.emit('connectAllCount', {count: io.sockets.clients().length-1});
     roomSocket.json.emit('connectAllCount', {count: io.sockets.clients().length-1});
     roomSocket.json.emit('connectRoomCount', {count: roomSocket.clients().length-1});
     
